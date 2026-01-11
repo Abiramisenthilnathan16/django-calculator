@@ -1,122 +1,183 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Django Calculator</title>
+    <title>Online Calculator</title>
     <style>
+        :root {
+            --bg-page: #fdfbf1;
+            --calc-border: #0a5299;
+            --calc-bg: #e1f0ff;
+            --display-border: #a0a0a0;
+            --btn-blue: #0056b3;
+            --btn-red: #ff0000;
+            --btn-gray: #b0b0b0;
+            --btn-white: #ffffff;
+            --text-dark: #1a4d80;
+        }
+
         body {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-color: var(--bg-page);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            font-family: "Segoe UI", sans-serif;
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
 
-        .calculator {
-            background: #111;
-            padding: 22px;
-            border-radius: 28px;
-            width: 300px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+        .calculator-container {
+            background: var(--calc-bg);
+            border: 6px solid var(--calc-border);
+            border-radius: 12px;
+            padding: 15px;
+            width: 360px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
-        h2 {
-            text-align: center;
-            color: white;
-            margin-bottom: 12px;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #6a96c1;
+            font-weight: bold;
+        }
+
+        .header span { color: #0a5299; }
+
+        .display-area {
+            background: white;
+            border: 3px solid var(--display-border);
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 15px;
+            position: relative;
+            height: 80px;
+        }
+
+        .memory-indicator {
+            font-size: 12px;
+            color: #999;
+            position: absolute;
+            top: 5px;
+            left: 10px;
         }
 
         .display {
             width: 100%;
-            height: 65px;
-            font-size: 30px;
-            text-align: right;
-            padding: 10px 14px;
-            border-radius: 14px;
             border: none;
-            background: #222;
-            color: white;
-            box-sizing: border-box;
-            margin-bottom: 15px;
+            font-size: 42px;
+            text-align: right;
+            outline: none;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .label-row {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+            padding-left: 5px;
         }
 
         .buttons {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
         }
 
         button {
-            height: 55px;
-            width: 100%;
-            font-size: 20px;
-            border: none;
-            border-radius: 14px;
+            height: 50px;
+            border: 1px solid #999;
+            border-radius: 4px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            transition: 0.15s ease;
             display: flex;
             justify-content: center;
             align-items: center;
+            box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);
         }
 
-        button:active {
-            transform: scale(0.95);
-        }
+        button:active { transform: translateY(1px); box-shadow: none; }
 
-        .num {
-            background: #333;
-            color: white;
-        }
+        /* Color Coding */
+        .btn-gray { background: var(--btn-gray); color: white; font-size: 14px; }
+        .btn-num { background: var(--btn-white); color: #0056b3; font-size: 22px; }
+        .btn-op-dark { background: #888; color: white; }
+        .btn-red { background: var(--btn-red); color: white; font-size: 16px; }
+        .btn-action { background: var(--btn-blue); color: white; }
 
-        .op {
-            background: #ff9500;
-            color: white;
-        }
+        /* Spanning */
+        .span-v { grid-row: span 2; height: 108px; }
 
-        .eq {
-            background: #00c853;
-            color: white;
-            grid-column: span 2;
-        }
-
-        .clr {
-            background: #e53935;
-            color: white;
+        .footer-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 11px;
+            color: #999;
         }
     </style>
 </head>
 <body>
 
-<div class="calculator">
-    <h2>Calculator</h2>
+<div class="calculator-container">
+    <div class="header">
+        <div>⭐ Add to Favorites</div>
+        <div><span>Calculator-1.com</span></div>
+    </div>
+
     <form method="post">
         {% csrf_token %}
-        <input class="display" type="text" name="expression" value="{{ expression }}" readonly>
+        <div class="display-area">
+            <div class="memory-indicator">M1: 0</div>
+            <input class="display" type="text" name="expression" value="{{ expression|default:'0' }}" readonly>
+        </div>
+
+        <div class="label-row">Mathematical</div>
 
         <div class="buttons">
-            <button class="clr" name="btn" value="C">C</button>
-            <button class="op" name="btn" value="/">÷</button>
-            <button class="op" name="btn" value="*">×</button>
-            <button class="op" name="btn" value="-">−</button>
+            <button class="btn-gray" name="btn" value="MC">MC</button>
+            <button class="btn-gray" name="btn" value="MR">MR</button>
+            <button class="btn-gray" name="btn" value="M-">M-</button>
+            <button class="btn-gray" name="btn" value="M+">M+</button>
+            <button class="btn-gray" name="btn" value="(">(</button>
+            <button class="btn-gray" name="btn" value=")">)</button>
 
-            <button class="num" name="btn" value="7">7</button>
-            <button class="num" name="btn" value="8">8</button>
-            <button class="num" name="btn" value="9">9</button>
-            <button class="op" name="btn" value="+">+</button>
+            <button class="btn-gray" name="btn" value="sqrt">√</button>
+            <button class="btn-num" name="btn" value="7">7</button>
+            <button class="btn-num" name="btn" value="8">8</button>
+            <button class="btn-num" name="btn" value="9">9</button>
+            <button class="btn-op-dark" name="btn" value="/">÷</button>
+            <button class="btn-gray" name="btn" value="%">%</button>
 
-            <button class="num" name="btn" value="4">4</button>
-            <button class="num" name="btn" value="5">5</button>
-            <button class="num" name="btn" value="6">6</button>
-            <button class="eq" name="btn" value="=">=</button>
+            <button class="btn-gray" name="btn" value="back">←</button>
+            <button class="btn-num" name="btn" value="4">4</button>
+            <button class="btn-num" name="btn" value="5">5</button>
+            <button class="btn-num" name="btn" value="6">6</button>
+            <button class="btn-op-dark" name="btn" value="*">×</button>
+            <button class="btn-op-dark" name="btn" value="-">−</button>
 
-            <button class="num" name="btn" value="1">1</button>
-            <button class="num" name="btn" value="2">2</button>
-            <button class="num" name="btn" value="3">3</button>
+            <button class="btn-red" name="btn" value="C">AC</button>
+            <button class="btn-num" name="btn" value="1">1</button>
+            <button class="btn-num" name="btn" value="2">2</button>
+            <button class="btn-num" name="btn" value="3">3</button>
+            <button class="btn-action span-v" name="btn" value="+">+</button>
+            <button class="btn-action span-v" name="btn" value="=">=</button>
 
-            <button class="num" name="btn" value="0" style="grid-column: span 2;">0</button>
-            <button class="num" name="btn" value=".">.</button>
+            <button class="btn-red" name="btn" value="C">C</button>
+            <button class="btn-num" name="btn" value="0">0</button>
+            <button class="btn-gray" name="btn" value="00">00</button>
+            <button class="btn-num" name="btn" value=".">.</button>
         </div>
     </form>
+
+    <div class="footer-text">
+        <div>Decimal places - 2 <u>(change)</u></div>
+        <div>PC/Mobile</div>
+    </div>
 </div>
 
 </body>
